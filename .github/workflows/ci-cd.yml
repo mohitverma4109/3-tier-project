@@ -1,0 +1,9 @@
+name: DevSecOps CI-CD pipeline
+on: 
+  push: 
+    branches: 
+       - qa 
+    paths: 
+       - client/**
+       - server/**
+       - .github/workflows/ci-cd.yml
