@@ -7,3 +7,34 @@ on:
        - client/**
        - server/**
        - .github/workflows/ci-cd.yml
+
+jobs:
+  gitleaks-scan:
+   name: Gitleaks Scan
+   runs-on: ubuntu-22.04
+
+   steps:
+     - name: Checkout source code
+       uses: action/checkout@v4
+
+     - name: Run Gitleaks scan
+       run: |
+        docker run --rm \
+        -v "$PWD:/repo" \
+        zricethezav/gitleaks:latest \
+        detect \
+        --source="/repo" \
+        --report-format=json \
+        --report-path="/repo/gitleaks-report.json" \
+        --redact
+        --exit-code 0
+
+     - name: Uplaod Artifact
+       uses: actions/upload-artifact@v7
+       with:
+         name: gitleaks-report
+         path: gitleaks-report.json
+
+
+   
+  
