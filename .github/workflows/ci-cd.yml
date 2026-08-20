@@ -26,7 +26,7 @@ jobs:
         --source="/repo" \
         --report-format=json \
         --report-path="/repo/gitleaks-report.json" \
-        --redact
+        --redact \
         --exit-code 0
 
      - name: Uplaod Artifact
