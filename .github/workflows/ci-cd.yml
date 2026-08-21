@@ -110,22 +110,28 @@ jobs:
           path: checkov-dockerfile-report.json
           if-no-files-found: warn
 
-  Client-Trivy-FS-Scan:
-    name: trivy-scan-client
+  client-trivy-fs:
+    name: Client Trivy FS Scan
     runs-on: ubuntu-latest
     needs: gitleaks-scan
-    steps:
-     - name: Checkout
-       uses: actions/checkout@v4
 
-     - name: Run Trivy vulnerability scanner
-       uses: aquasecurity/trivy-action@v0.36.0
-       with:
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@v0.2.6
+        with:
           version: latest
           cache: true
 
-     - name: Run Trivy FS scan on client (JSON)
-       run: |
+      - name: Verify Trivy installation
+        run: |
+          trivy --version
+          which trivy
+
+      - name: Run Trivy FS scan on client (JSON)
+        run: |
           trivy fs ./client \
             --format json \
             --output client-trivy-fs-report.json \
@@ -133,8 +139,8 @@ jobs:
             --ignore-unfixed \
             --exit-code 0
 
-     - name: Run Trivy FS scan on client (table)
-       run: |
+      - name: Run Trivy FS scan on client (table)
+        run: |
           trivy fs ./client \
             --format table \
             --output client-trivy-fs-report.txt \
@@ -142,16 +148,16 @@ jobs:
             --ignore-unfixed \
             --exit-code 0
        
-     - name: Upload Trivy FS report JSON
-       uses: actions/upload-artifact@v4
-       with:
+      - name: Upload Trivy FS report JSON
+        uses: actions/upload-artifact@v4
+        with:
           name: trivy-fs-report-json
           path: client-trivy-fs-report.json
           if-no-files-found: warn
 
-     - name: Upload Trivy FS report Table
-       uses: actions/upload-artifact@v4
-       with:
+      - name: Upload Trivy FS report Table
+        uses: actions/upload-artifact@v4
+        with:
           name: trivy-fs-report-table
           path: client-trivy-fs-report.txt
           if-no-files-found: warn
